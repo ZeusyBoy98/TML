@@ -1,0 +1,8 @@
+<Prefabs>
+    <Gigma attribute="thingy"/>
+</Prefabs>
+<Body>
+    <Box>
+        <Gigma/>
+    </Box>
+</Body>
