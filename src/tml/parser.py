@@ -32,7 +32,9 @@ def parse(tokens):
         return {"type": "Document", "children": children}
     def parseTag():
         t = consume()
-        return {"type": "Tag", "name": t["value"], "children": []}
+        name, attributes = parseText(t["value"])
+        attributes = parseAttributes(attributes)
+        return {"type": "Tag", "name": name, "attributes": attributes, "children": []}
     def parseBody():
         consume()
         return {"type": "Body", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
@@ -64,5 +66,34 @@ def parse(tokens):
         #if peek()["type"] == lexer.TOKENTYPE["TAGCLOSE"]:
         consume()
         return children
+    def parseText(input):
+        if " " in input:
+            name, attributes = input.split(" ", 1)
+        else:
+            name, attributes = input, ""
+        return name, attributes
+    def parseAttributes(input):
+        attributes = {}
+        i = 0
+        while i < len(input):
+            if input[i] == "=":
+                if input[i+1] == "\"":
+                    j = i + 2
+                    while j < len(input) and input[j] != "\"":
+                        j += 1
+                    key = input[:i].strip()
+                    value = input[i+2:j]
+                    attributes[key] = value
+                    input = input[j+1:]
+                    i = 0
+                else:
+                    key = input[:i].strip()
+                    value = input[i+1:].strip()
+                    attributes[key] = value
+                    input = input[i+1:]
+                    i = 0
+            else:
+                i += 1
+        return attributes
     print("Parsed")
     return parseDocument()
