@@ -11,9 +11,11 @@ def generate(node):
             print("Generated")
             return "\n".join(allStatements)
         case "Tag":
+            pairs = [f'{key}="{value}"' for key, value in node["attributes"].items()]
+            arguments = ", ".join(pairs)
             counter += 1
             var = f"tag{counter}"
-            statement = f"{var} = toga.{node["name"]}()"
+            statement = f"{var} = toga.{node["name"]}({arguments})"
             return statement, var
         case "Box":
             childStatementsList = []
