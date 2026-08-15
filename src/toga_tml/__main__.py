@@ -10,7 +10,7 @@ def load(file):
     parsed = parser.parse(tokens)
     output = generator.generate(parsed)
     namespace = {}
-    exec("import toga\n" + output, namespace)
+    exec("import toga\nfrom toga.style import Pack\n" + output, namespace)
     if "main_box" not in namespace:
         raise RuntimeError("Generated TML code did not produce a 'main_box' widget")
     return namespace["main_box"]

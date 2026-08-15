@@ -98,14 +98,29 @@ def parse(tokens):
                     input = input[j+1:]
                     i = 0
                 else:
-                    j = i + 1
-                    while j < len(input) and input[j] != " ":
-                        j += 1
-                    key = input[:i].strip()
-                    value = input[i+1:j]
-                    attributes[key] = {"kind": "string", "value": value}
-                    input = input[j:]
-                    i = 0
+                    k = i + 1
+                    while k < len(input) and input[k] != " " and input[k] != "(":
+                        k += 1
+                    if k < len(input) and input[k] == "(":
+                        depth = 1
+                        j = k + 1
+                        while j < len(input) and depth > 0:
+                            if input[j] == "(":
+                                depth += 1
+                            elif input[j] == ")":
+                                depth -= 1
+                            j += 1
+                        key = input[:i].strip()
+                        value = input[i+1:j]
+                        attributes[key] = {"kind": "raw", "value": value}
+                        input = input[j:]
+                        i = 0
+                    else:
+                        key = input[:i].strip()
+                        value = input[i+1:k].strip()
+                        attributes[key] = {"kind": "string", "value": value}
+                        input = input[k:]
+                        i = 0
             elif input[i] == "\"":
                 j = i + 1
                 while j < len(input) and not (input[j] == "\"" and input[j-1] != "\\"):
