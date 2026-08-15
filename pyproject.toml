@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "toga_tml"
+version = "0.0.1"
+authors = [
+    { name="ZeusyBoy", email="wetcementstudios@gmail.com"}
+]
+description = "Markup Language for Toga"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "toga",
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Compilers",
+]
+keywords = ["toga", "compiler", "markup language", "ui", "gui"]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/ZeusyBoy98/TML"
+
+[tool.hatch.build]
+exclude = [
+    "**/.briefcase",
+    "**/*-venv",
+    "**/venv",
+    "**/.venv",
+    "**/__pycache__",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/toga_tml"]

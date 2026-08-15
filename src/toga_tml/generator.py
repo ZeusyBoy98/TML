@@ -11,11 +11,19 @@ def generate(node):
             print("Generated")
             return "\n".join(allStatements)
         case "Tag":
-            pairs = [f'{key}="{value}"' for key, value in node["attributes"].items()]
-            arguments = ", ".join(pairs)
+            pairs = []
+            for key, attribute in node["attributes"].items():
+                if attribute["kind"] == "string":
+                    pairs.append(f'{key}="{attribute["value"]}"')
+                elif attribute["kind"] == "raw":
+                    pairs.append(f'{key}={attribute["value"]}')
+            attributes = ", ".join(pairs)
             counter += 1
             var = f"tag{counter}"
-            statement = f"{var} = toga.{node["name"]}({arguments})"
+            argumentParts = [f'"{argument}"' for argument in node["arguments"]]
+            argumentString = ", ".join(argumentParts)
+            allArguments = ", ".join(filter(None, [argumentString, attributes]))
+            statement = f"{var} = toga.{node["name"]}({allArguments})"
             return statement, var
         case "Box":
             childStatementsList = []
@@ -40,7 +48,7 @@ def generate(node):
                 childStatementsList.append(childStatements)
                 childVars.append(childVar)
             counter += 1
-            var = "body"
+            var = "main_box"
             box_statement = f"{var} = toga.Box()"
             add_statement = f"{var}.add({', '.join(childVars)})"
             all_statements = "\n".join(childStatementsList + [box_statement, add_statement])

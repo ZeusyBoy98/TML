@@ -1,4 +1,4 @@
-import lexer
+from . import lexer
 
 def parse(tokens):
     pos = 0
@@ -18,9 +18,9 @@ def parse(tokens):
         while peek()["type"] != lexer.TOKENTYPE["EOF"]:
             while peek()["type"] == lexer.TOKENTYPE["NEWLINE"]: consume()
             if peek()["type"] == lexer.TOKENTYPE["EOF"]: break
-            if peek()["type"] == lexer.TOKENTYPE["TAG"]:
+            elif peek()["type"] == lexer.TOKENTYPE["TAG"]:
                 children.append(parseTag())
-            if peek()["type"] == lexer.TOKENTYPE["TAGOPEN"]:
+            elif peek()["type"] == lexer.TOKENTYPE["TAGOPEN"]:
                 if peek()["value"].startswith("Box"):
                     children.append(parseBox())
                 elif peek()["value"].startswith("Body"):
@@ -28,13 +28,15 @@ def parse(tokens):
                 elif peek()["value"].startswith("Prefabs"):
                     children.append(parsePrefabs())
                 else:
-                    raise Exception(f"Unknown tag {peek()["value"]}")
+                    raise Exception(f"Unknown tag {peek()}")
+            else:
+                raise Exception(f"Unexpected token {peek()["type"]}")
         return {"type": "Document", "children": children}
     def parseTag():
         t = consume()
         name, attributes = parseText(t["value"])
-        attributes = parseAttributes(attributes)
-        return {"type": "Tag", "name": name, "attributes": attributes, "children": []}
+        attributes, arguments = parseAttributes(attributes)
+        return {"type": "Tag", "name": name, "arguments": arguments, "attributes": attributes, "children": []}
     def parseBody():
         consume()
         return {"type": "Body", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
@@ -63,7 +65,6 @@ def parse(tokens):
                     raise Exception(f"Unknown tag {peek()["value"]}")
         if peek()["type"] != closeType:
             raise Exception(f"Unclosed tag, expected {closeType} but hit EOF")
-        #if peek()["type"] == lexer.TOKENTYPE["TAGCLOSE"]:
         consume()
         return children
     def parseText(input):
@@ -73,27 +74,48 @@ def parse(tokens):
             name, attributes = input, ""
         return name, attributes
     def parseAttributes(input):
+        arguments = []
         attributes = {}
         i = 0
         while i < len(input):
             if input[i] == "=":
                 if input[i+1] == "\"":
                     j = i + 2
-                    while j < len(input) and input[j] != "\"":
+                    while j < len(input) and not (input[j] == "\"" and input[j-1] != "\\"):
                         j += 1
                     key = input[:i].strip()
                     value = input[i+2:j]
-                    attributes[key] = value
+                    attributes[key] = {"kind": "string", "value": value}
+                    input = input[j+1:]
+                    i = 0
+                elif input[i+1] == "(":
+                    j = i + 2
+                    while j < len(input) and input[j] != ")":
+                        j += 1
+                    key = input[:i].strip()
+                    value = input[i+1:j+1]
+                    attributes[key] = {"kind": "raw", "value": value}
                     input = input[j+1:]
                     i = 0
                 else:
+                    j = i + 1
+                    while j < len(input) and input[j] != " ":
+                        j += 1
                     key = input[:i].strip()
-                    value = input[i+1:].strip()
-                    attributes[key] = value
-                    input = input[i+1:]
+                    value = input[i+1:j]
+                    attributes[key] = {"kind": "string", "value": value}
+                    input = input[j:]
                     i = 0
+            elif input[i] == "\"":
+                j = i + 1
+                while j < len(input) and not (input[j] == "\"" and input[j-1] != "\\"):
+                    j += 1
+                value = input[i+1:j]
+                arguments.append(value)
+                input = input[j+1:]
+                i = 0
             else:
                 i += 1
-        return attributes
+        return attributes, arguments
     print("Parsed")
     return parseDocument()

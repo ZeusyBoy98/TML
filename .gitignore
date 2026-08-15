@@ -1,1 +1,5 @@
 /src/tml/__pycache__/
+.briefcase/
+*venv*/
+__pycache__/
+/tests
