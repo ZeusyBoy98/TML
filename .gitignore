@@ -2,4 +2,5 @@
 .briefcase/
 *venv*/
 __pycache__/
-/tests
+tests/
+dist/
