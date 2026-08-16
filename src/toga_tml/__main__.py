@@ -3,7 +3,7 @@ from . import lexer
 from . import parser
 from . import generator
 
-def load(file, self):
+def load(file, self=None):
     with open(file, "r", encoding="utf-8") as f:
         tml_source = f.read()
     tokens = lexer.tokenize(tml_source)
@@ -11,9 +11,9 @@ def load(file, self):
     output = generator.generate(parsed)
     namespace = {"self": self}
     exec("import toga\nfrom toga.style import Pack\n" + output, namespace)
-    if "main_box" not in namespace:
-        raise RuntimeError("Generated TML code did not produce a 'main_box' widget")
-    return namespace["main_box"]
+    if "body" not in namespace:
+        raise RuntimeError("Generated TML code did not produce a 'body' widget")
+    return namespace["body"]
 
 def main():
     if len(sys.argv) < 2:
