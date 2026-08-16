@@ -1,6 +1,6 @@
 <Import from="toga.style.pack" import="ROW,COLUMN"/>
 
-<Body>
+<Body direction=COLUMN>
     <Box name="name_box" direction=ROW margin=5>
         <Label "Your name:" name="name_label" margin=(0, 5)/>
         <TextInput name="name_input" flex=1/>

@@ -24,6 +24,7 @@ def parse(tokens):
                     seenNonImport = True
                     children.append(parseTag())
             elif peek()["type"] == lexer.TOKENTYPE["TAGOPEN"]:
+                seenNonImport = True
                 if peek()["value"].startswith("Box"):
                     children.append(parseBox())
                 elif peek()["value"].startswith("Body"):

@@ -53,11 +53,20 @@ def generate(node):
         case "Body":
             childStatementsList = []
             childVars = []
+            name_attributes = node["attributes"].pop("name", None)
+            name = name_attributes["value"] if name_attributes else var
             for child in node["children"]:
                 childStatements, childVar = generate(child)
                 childStatementsList.append(childStatements)
                 childVars.append(childVar)
-            box_statement = "body = toga.Box()\nself.body = body"
+            pairs = []
+            for key, attribute in node["attributes"].items():
+                if attribute["kind"] == "string":
+                    pairs.append(f'{key}="{attribute["value"]}"')
+                elif attribute["kind"] == "raw":
+                    pairs.append(f'{key}={attribute["value"]}')
+            attributes = ", ".join(pairs)
+            box_statement = f"body = toga.Box({attributes})\nself.body = body"
             add_statement = f"body.add({', '.join(childVars)})"
             all_statements = "\n".join(childStatementsList + [box_statement, add_statement])
             return all_statements, "body"
