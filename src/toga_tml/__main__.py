@@ -1,7 +1,6 @@
 import sys
-from . import lexer
-from . import parser
-from . import generator
+from . import generator, lexer, parser
+
 
 def load(file, self=None):
     with open(file, "r", encoding="utf-8") as f:

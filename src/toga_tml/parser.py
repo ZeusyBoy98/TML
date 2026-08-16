@@ -1,5 +1,6 @@
 from . import lexer
 
+
 def parse(tokens):
     pos = 0
     def peek(): return tokens[pos]
@@ -8,11 +9,6 @@ def parse(tokens):
         t = tokens[pos]
         pos += 1
         return t
-    def expect(type):
-        t = consume()
-        if t["type"] != type:
-            raise Exception(f"Expected {type}, got {t["type"]}")
-            return t
     def parseDocument():
         children = []
         while peek()["type"] != lexer.TOKENTYPE["EOF"]:
@@ -68,7 +64,7 @@ def parse(tokens):
                 else:
                     raise Exception(f"Unknown tag {peek()["value"]}")
         if peek()["type"] != closeType:
-            raise Exception(f"Unclosed tag, expected {closeType} but hit EOF")
+            raise Exception(f"Unclosed tag, expected {closeType} but got end of file")
         consume()
         return children
     def parseText(input):
