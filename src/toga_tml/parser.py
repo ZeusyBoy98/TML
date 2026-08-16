@@ -122,7 +122,7 @@ def parse(tokens):
                     else:
                         key = input[:i].strip()
                         value = input[i+1:k].strip()
-                        attributes[key] = {"kind": "string", "value": value}
+                        attributes[key] = {"kind": "raw", "value": value}
                         input = input[k:]
                         i = 0
             elif input[i] == "\"":
