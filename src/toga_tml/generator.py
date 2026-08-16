@@ -45,7 +45,7 @@ def generate(node):
                 elif attribute["kind"] == "raw":
                     pairs.append(f'{key}={attribute["value"]}')
             attributes = ", ".join(pairs)
-            box_statement = f"{var} = toga.Box({attributes})\nself.{name} = {var})"
+            box_statement = f"{var} = toga.Box({attributes})\nself.{name} = {var}"
             add_statement = f"{var}.add({', '.join(childVars)})"
 
             all_statements = "\n".join(childStatementsList + [box_statement, add_statement])
