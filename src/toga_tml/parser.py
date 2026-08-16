@@ -25,8 +25,8 @@ def parse(tokens):
                     children.append(parseBox())
                 elif peek()["value"].startswith("Body"):
                     children.append(parseBody())
-                elif peek()["value"].startswith("Prefabs"):
-                    children.append(parsePrefabs())
+                # elif peek()["value"].startswith("Prefabs"):
+                    # children.append(parsePrefabs())
                 else:
                     raise Exception(f"Unknown tag {peek()}")
             else:
@@ -42,9 +42,9 @@ def parse(tokens):
         _, attributes = parseText(t["value"])
         attributes, _ = parseAttributes(attributes)
         return {"type": "Body", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
-    def parsePrefabs():
-        consume()
-        return {"type": "Prefabs", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
+    # def parsePrefabs():
+        # consume()
+        # return {"type": "Prefabs", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
     def parseBox():
         t = consume()
         _, attributes = parseText(t["value"])
@@ -63,8 +63,8 @@ def parse(tokens):
                     children.append(parseBox())
                 elif peek()["value"].startswith("Body"):
                     children.append(parseBody())
-                elif peek()["value"].startswith("Prefabs"):
-                    children.append(parsePrefabs())
+                # elif peek()["value"].startswith("Prefabs"):
+                #     children.append(parsePrefabs())
                 else:
                     raise Exception(f"Unknown tag {peek()["value"]}")
         if peek()["type"] != closeType:
