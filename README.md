@@ -47,6 +47,8 @@ Then run `briefcase dev -r` to run the project and rebuild dependencies.
 ## Usage
 The syntax for TML is similar to HTML, except it uses Toga attributes and tag names. An example can be seen here:
 ```xml
+<Import from="toga.style" import="Pack"/>
+
 <Body>
     <Label "Hello world" name="hi_label" style=Pack(color="#ff0000")/>
     <Box name="input_container"> 
@@ -55,6 +57,7 @@ The syntax for TML is similar to HTML, except it uses Toga attributes and tag na
     </Box>
 </Body>
 ```
+- Imports must be put in self closing tags at the top of a TML file. The syntax is `<Import from="location" import="thing"` The quotes are optional, `from=location import=thing` is also valid TML code.
 - All TML user interface code should be inside the `<Body></Body>` tags. 
 - If you want to be able to refer to a TML element in a python file, a `name=""` must be added, and then you can refer to it with `self.name`. 
 - All TML tags are self closing, except for `<Body></Body>` and `<Box></Box>`. This means that when using a label or a button, text that will be displayed on it must go in quotes after the tag opening, called the "argument" e.g. `<Label "Hello">`. 

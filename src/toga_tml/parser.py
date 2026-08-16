@@ -10,12 +10,19 @@ def parse(tokens):
         pos += 1
         return t
     def parseDocument():
+        seenNonImport = False
         children = []
         while peek()["type"] != lexer.TOKENTYPE["EOF"]:
             while peek()["type"] == lexer.TOKENTYPE["NEWLINE"]: consume()
             if peek()["type"] == lexer.TOKENTYPE["EOF"]: break
             elif peek()["type"] == lexer.TOKENTYPE["TAG"]:
-                children.append(parseTag())
+                if peek()["value"].startswith("Import"):
+                    if seenNonImport:
+                        raise Exception("Import statements must be at the top of the tml file, before any other tags")
+                    children.append(parseImport())
+                else:
+                    seenNonImport = True
+                    children.append(parseTag())
             elif peek()["type"] == lexer.TOKENTYPE["TAGOPEN"]:
                 if peek()["value"].startswith("Box"):
                     children.append(parseBox())
@@ -132,5 +139,10 @@ def parse(tokens):
             else:
                 i += 1
         return attributes, arguments
+    def parseImport():
+        t = consume()
+        _, attributes = parseText(t["value"])
+        attributes, _ = parseAttributes(attributes)
+        return {"type": "Import", "attributes": attributes}
     print("Parsed")
     return parseDocument()

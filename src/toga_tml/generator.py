@@ -61,9 +61,24 @@ def generate(node):
             add_statement = f"body.add({', '.join(childVars)})"
             all_statements = "\n".join(childStatementsList + [box_statement, add_statement])
             return all_statements, "body"
-        case "Prefabs":
-            allStatements = []
-            for child in node["children"]:
-                childStatements, childVar = generate(child)
-                allStatements.append(childStatements)
-            return "\n".join(allStatements), None
+        # case "Prefabs":
+            # allStatements = []
+            # for child in node["children"]:
+                # childStatements, childVar = generate(child)
+                # allStatements.append(childStatements)
+            # return "\n".join(allStatements), None
+        case "Import":
+            fromAttribute = None
+            importAttribute = None
+            moduleAttribute = None
+            for key, attribute in node["attributes"].items():
+                if key == "from":
+                    fromAttribute = attribute["value"]
+                elif key == "import":
+                    importAttribute = attribute["value"]
+                elif key == "module":
+                    moduleAttribute = attribute["value"]
+            if fromAttribute:
+                return f"from {fromAttribute} import {importAttribute}", None
+            else:
+                return f"import {moduleAttribute}", None

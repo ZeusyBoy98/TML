@@ -1,0 +1,9 @@
+<Import from="toga.style.pack" import="ROW,COLUMN"/>
+
+<Body>
+    <Box name="name_box" direction=ROW margin=5>
+        <Label "Your name:" name="name_label" margin=(0, 5)/>
+        <TextInput name="name_input" flex=1/>
+    </Box>
+    <Button "Say Hello!" name="button" on_press=self.say_hello margin=5/>
+</Body>
