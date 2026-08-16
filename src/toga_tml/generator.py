@@ -32,10 +32,16 @@ def generate(node):
                 child_statements, child_var = generate(child)
                 childStatementsList.append(child_statements)
                 childVars.append(child_var)
-
+            pairs = []
+            for key, attribute in node["attributes"].items():
+                if attribute["kind"] == "string":
+                    pairs.append(f'{key}="{attribute["value"]}"')
+                elif attribute["kind"] == "raw":
+                    pairs.append(f'{key}={attribute["value"]}')
+            attributes = ", ".join(pairs)
             counter += 1
             var = f"box{counter}"
-            box_statement = f"{var} = toga.Box()"
+            box_statement = f"{var} = toga.Box({attributes})"
             add_statement = f"{var}.add({', '.join(childVars)})"
 
             all_statements = "\n".join(childStatementsList + [box_statement, add_statement])

@@ -38,14 +38,18 @@ def parse(tokens):
         attributes, arguments = parseAttributes(attributes)
         return {"type": "Tag", "name": name, "arguments": arguments, "attributes": attributes, "children": []}
     def parseBody():
-        consume()
-        return {"type": "Body", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
+        t = consume()
+        _, attributes = parseText(t["value"])
+        attributes, _ = parseAttributes(attributes)
+        return {"type": "Body", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
     def parsePrefabs():
         consume()
         return {"type": "Prefabs", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
     def parseBox():
-        consume()
-        return {"type": "Box", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
+        t = consume()
+        _, attributes = parseText(t["value"])
+        attributes, _ = parseAttributes(attributes)
+        return {"type": "Box", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
     def parseUntil(closeType):
         children = []
         while peek()["type"] != lexer.TOKENTYPE["EOF"] and peek()["type"] != closeType:
