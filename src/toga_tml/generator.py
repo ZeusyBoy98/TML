@@ -53,8 +53,6 @@ def generate(node):
         case "Body":
             childStatementsList = []
             childVars = []
-            name_attributes = node["attributes"].pop("name", None)
-            name = name_attributes["value"] if name_attributes else var
             for child in node["children"]:
                 childStatements, childVar = generate(child)
                 childStatementsList.append(childStatements)
