@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "toga_tml"
-version = "0.0.6"
+version = "0.0.7"
 authors = [
     { name="ZeusyBoy", email="wetcementstudios@gmail.com"}
 ]
