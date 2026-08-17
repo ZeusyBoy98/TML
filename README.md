@@ -49,8 +49,12 @@ The syntax for TML is similar to HTML, except it uses Toga attributes and tag na
 ```xml
 <Import from="toga.style" import="Pack"/>
 
+<Prefabs>
+    <RedHi "Hello world" type="Label" style=Pack(color="#ff0000")/>
+</Prefabs>
+
 <Body>
-    <Label "Hello world" name="hi_label" style=Pack(color="#ff0000")/>
+    <RedHi name="hi_label"/>
     <Box name="input_container"> 
         <TextInput name="name_input" flex=1/>
         <Button "Click me!" name="button" on_press=self.say_hello margin=5/>
@@ -58,6 +62,7 @@ The syntax for TML is similar to HTML, except it uses Toga attributes and tag na
 </Body>
 ```
 - Imports must be put in self closing tags at the top of a TML file. The syntax is `<Import from="location" import="thing"` The quotes are optional, `from=location import=thing` is also valid TML code.
+- Prefabs let you define tags that you can use later with preset arguments and attributes. They must be defined in the `<Prefabs></Prefabs>`. Any prefab you use in the Body has to have a `name=""` attribute to distinguish it from other uses of that prefab.
 - All TML user interface code should be inside the `<Body></Body>` tags. 
 - If you want to be able to refer to a TML element in a python file, a `name=""` must be added, and then you can refer to it with `self.name`. 
 - All TML tags are self closing, except for `<Body></Body>` and `<Box></Box>`. This means that when using a label or a button, text that will be displayed on it must go in quotes after the tag opening, called the "argument" e.g. `<Label "Hello">`. 
