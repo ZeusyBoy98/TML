@@ -11,7 +11,12 @@ def tokenize(input):
     i = 0
 
     while i < len(input):
-        if input[i] == "<":
+        if input[i:i+4] == "<!--":
+            closeIndex = input.find("-->", i + 4)
+            if closeIndex == -1:
+                raise Exception("Unterminated comment, expected '-->'")
+            i = closeIndex + 3
+        elif input[i] == "<":
             closeIndex = input.find(">", i)
             tagText = input[i+1:closeIndex]
             if tagText.startswith("/"):

@@ -49,6 +49,7 @@ The syntax for TML is similar to HTML, except it uses Toga attributes and tag na
 ```xml
 <Import from="toga.style" import="Pack"/>
 
+<!-- This is a comment -->
 <Prefabs>
     <RedHi "Hello world" type="Label" style=Pack(color="#ff0000")/>
 </Prefabs>
@@ -62,6 +63,7 @@ The syntax for TML is similar to HTML, except it uses Toga attributes and tag na
 </Body>
 ```
 - Imports must be put in self closing tags at the top of a TML file. The syntax is `<Import from="location" import="thing"` The quotes are optional, `from=location import=thing` is also valid TML code.
+- TML comments are the same as HTML comments, they can be single line or multi-line, but they cannot go inside of other code.
 - Prefabs let you define tags that you can use later with preset arguments and attributes. They must be defined in the `<Prefabs></Prefabs>`. Any prefab you use in the Body has to have a `name=""` attribute to distinguish it from other uses of that prefab.
 - All TML user interface code should be inside the `<Body></Body>` tags. 
 - If you want to be able to refer to a TML element in a python file, a `name=""` must be added, and then you can refer to it with `self.name`. 

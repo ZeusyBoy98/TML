@@ -1,5 +1,7 @@
 <Import from="toga.style.pack" import="ROW,COLUMN"/>
 
+<!-- This is a comment -->
+
 <Prefabs>
     <Gigma type="label" "Your name:"margin=(0,5)/>
 </Prefabs>
