@@ -1,8 +1,12 @@
 <Import from="toga.style.pack" import="ROW,COLUMN"/>
 
+<Prefabs>
+    <MarginLabel type="Label" margin=(0,5)/>
+</Prefabs>
+
 <Body direction=COLUMN>
     <Box name="name_box" direction=ROW margin=5>
-        <Label "Your name:" name="name_label" margin=(0, 5)/>
+        <MarginLabel "Your name:" name="name_label"/>
         <TextInput name="name_input" flex=1/>
     </Box>
     <Button "Say Hello!" name="button" on_press=self.say_hello margin=5/>
