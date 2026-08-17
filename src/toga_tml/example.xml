@@ -1,7 +1,13 @@
-<Body>
-    <Box>
-        <Label "Hello world" name="hi_label" style=Pack(color="#ff0000")/>
+<Import from="toga.style.pack" import="ROW,COLUMN"/>
+
+<Prefabs>
+    <Gigma type="label" "Your name:"margin=(0,5)/>
+</Prefabs>
+
+<Body direction=COLUMN>
+    <Box name="name_box" direction=ROW margin=5>
+        <Gigma name="name_label"/>
         <TextInput name="name_input" flex=1/>
-        <Button "Click me!" name="button" on_press=self.say_hello margin=5/>
     </Box>
+    <Button "Say Hello!" name="button" on_press=self.say_hello margin=5/>
 </Body>

@@ -1,7 +1,9 @@
 counter = 0
+prefabs = {}
 
 def generate(node):
     global counter
+    global prefabs
     match node["type"]:
         case "Document":
             allStatements = []
@@ -11,6 +13,20 @@ def generate(node):
             print("Generated")
             return "\n".join(allStatements)
         case "Tag":
+            if node["name"] in prefabs:
+                prefab = prefabs[node["name"]]
+                if "name" not in node["attributes"]:
+                    raise Exception(f"Prefab {node['name']} requires a 'name' attribute")
+                node["attributes"].pop("type", None)
+                usageAttributes = node["attributes"]
+                node = {
+                    "type": "Tag",
+                    "name": prefab["type"],
+                    "attributes": {**prefab["attributes"], **usageAttributes},
+                    "arguments": node["arguments"] or prefab["arguments"],
+                    "children": [],
+                }
+
             pairs = []
             counter += 1
             var = f"tag{counter}"
@@ -25,7 +41,7 @@ def generate(node):
             argumentParts = [f'"{argument}"' for argument in node["arguments"]]
             argumentString = ", ".join(argumentParts)
             allArguments = ", ".join(filter(None, [argumentString, attributes]))
-            statement = f"{var} = toga.{node["name"]}({allArguments})\nself.{name} = {var}"
+            statement = f"{var} = toga.{node['name']}({allArguments})\nself.{name} = {var}"
             return statement, var
         case "Box":
             childStatementsList = []
@@ -68,12 +84,12 @@ def generate(node):
             add_statement = f"body.add({', '.join(childVars)})"
             all_statements = "\n".join(childStatementsList + [box_statement, add_statement])
             return all_statements, "body"
-        # case "Prefabs":
-            # allStatements = []
-            # for child in node["children"]:
-                # childStatements, childVar = generate(child)
-                # allStatements.append(childStatements)
-            # return "\n".join(allStatements), None
+        case "Prefabs":
+            for child in node["children"]:
+                attributes = child["attributes"]
+                tag_type = attributes.pop("type")["value"]
+                prefabs[child["name"]] = {"type": tag_type, "arguments": child["arguments"], "attributes": attributes}
+            return "", None
         case "Import":
             fromAttribute = None
             importAttribute = None

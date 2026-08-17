@@ -23,6 +23,7 @@ test_sources = [
 
 requires = [
     "toga-tml",
+    "faker",
 ]
 test_requires = [
     "pytest",
