@@ -14,7 +14,7 @@ def tokenize(input):
         if input[i:i+4] == "<!--":
             closeIndex = input.find("-->", i + 4)
             if closeIndex == -1:
-                raise Exception("Unterminated comment, expected '-->'")
+                raise Exception("L001 - Unterminated comment, expected '-->'")
             i = closeIndex + 3
         elif input[i] == "<":
             closeIndex = input.find(">", i)

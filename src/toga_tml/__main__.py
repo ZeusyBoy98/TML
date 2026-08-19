@@ -11,7 +11,7 @@ def load(file, self=None):
     namespace = {"self": self}
     exec("import toga\n" + output, namespace)
     if "body" not in namespace:
-        raise RuntimeError("Generated TML code did not produce a 'body' widget")
+        raise RuntimeError("M001 - The TML code does not contain a 'Body' widget.")
     return namespace["body"]
 
 def main():

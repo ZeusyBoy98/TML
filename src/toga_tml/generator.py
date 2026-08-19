@@ -16,7 +16,7 @@ def generate(node):
             if node["name"] in prefabs:
                 prefab = prefabs[node["name"]]
                 if "name" not in node["attributes"]:
-                    raise Exception(f"Prefab {node['name']} requires a 'name' attribute")
+                    raise Exception(f"G001 - Prefab {node['name']} requires a 'name' attribute")
                 node["attributes"].pop("type", None)
                 usageAttributes = node["attributes"]
                 node = {

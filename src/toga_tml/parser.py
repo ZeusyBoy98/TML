@@ -18,7 +18,7 @@ def parse(tokens):
             elif peek()["type"] == lexer.TOKENTYPE["TAG"]:
                 if peek()["value"].startswith("Import"):
                     if seenNonImport:
-                        raise Exception("Import statements must be at the top of the tml file, before any other tags")
+                        raise Exception("P001 - Import statements must be at the top of the tml file, before any other tags")
                     children.append(parseImport())
                 else:
                     seenNonImport = True
@@ -32,9 +32,9 @@ def parse(tokens):
                 elif peek()["value"].startswith("Prefabs"):
                     children.append(parsePrefabs())
                 else:
-                    raise Exception(f"Unknown tag {peek()}")
+                    raise Exception(f"P002 - Unknown tag {peek()}")
             else:
-                raise Exception(f"Unexpected token {peek()['type']}")
+                raise Exception(f"P003 - Unexpected token {peek()['type']}")
         return {"type": "Document", "children": children}
     def parseTag():
         t = consume()
@@ -70,9 +70,9 @@ def parse(tokens):
                 # elif peek()["value"].startswith("Prefabs"):
                 #     children.append(parsePrefabs())
                 else:
-                    raise Exception(f"Unknown tag {peek()['value']}")
+                    raise Exception(f"P002 - Unknown tag {peek()['value']}")
         if peek()["type"] != closeType:
-            raise Exception(f"Unclosed tag, expected {closeType} but got end of file")
+            raise Exception(f"P004 - Unclosed tag, expected {closeType} but got end of file")
         consume()
         return children
     def parseText(input):

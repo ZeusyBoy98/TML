@@ -1,0 +1,13 @@
+site_name: TML Docs
+nav:
+  - Home: index.md
+  - Getting Started: starting.md
+  - Syntax Overview: overview.md
+  - How It Works: how.md
+  - Syntax Reference: reference.md
+  - Troubleshooting: troubleshooting.md
+theme: 
+  name: shadcn
+  icon: https://raw.githubusercontent.com/ZeusyBoy98/TML/refs/heads/main/logo.png
+markdown_extensions:
+  - codehilite

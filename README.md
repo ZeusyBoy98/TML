@@ -9,10 +9,13 @@
 ![Repo Size](https://img.shields.io/github/repo-size/ZeusyBoy98/TML)
 <!-- rumdl-enable MD013 -->
 
-![TML Logo](https://github.com/ZeusyBoy98/TML/blob/main/logo.png)
+![TML Logo](https://raw.githubusercontent.com/ZeusyBoy98/TML/refs/heads/main/logo.png)
 
 ## Toga Markup Language
 A markup language for the Toga Python framework. Allows you to build cross-platform GUIs in Python, but with an XML tag syntax.
+
+## Documentation
+Read the full docs here: [TML Docs](https://tml.zeusyboy.com)
 
 ## Why
 The Toga framework for Python is really cool. It lets you make cross-platform user interfaces that you can use with BeeWare, and I really want to learn it and use it. When I started using it, I was immediately put off by how it makes the UI. It feels like making a whole website using just the JavaScript DOM. So I had the idea to build a markup language like HTML that I could use with Toga and BeeWare to make development so much easier for myself.
@@ -62,10 +65,10 @@ The syntax for TML is similar to HTML, except it uses Toga attributes and tag na
     </Box>
 </Body>
 ```
-- Imports must be put in self closing tags at the top of a TML file. The syntax is `<Import from="location" import="thing"` The quotes are optional, `from=location import=thing` is also valid TML code.
+- Imports must be put in self closing tags at the top of a TML file. The syntax is `<Import from="location" import="thing"/>` The quotes are optional, `from=location import=thing` is also valid TML code.
 - TML comments are the same as HTML comments, they can be single line or multi-line, but they cannot go inside of other code.
 - Prefabs let you define tags that you can use later with preset arguments and attributes. They must be defined in the `<Prefabs></Prefabs>`. Any prefab you use in the Body has to have a `name=""` attribute to distinguish it from other uses of that prefab.
 - All TML user interface code should be inside the `<Body></Body>` tags. 
 - If you want to be able to refer to a TML element in a python file, a `name=""` must be added, and then you can refer to it with `self.name`. 
-- All TML tags are self closing, except for `<Body></Body>` and `<Box></Box>`. This means that when using a label or a button, text that will be displayed on it must go in quotes after the tag opening, called the "argument" e.g. `<Label "Hello">`. 
+- All TML tags are self closing, except for `<Body></Body>` and `<Box></Box>`. This means that when using a label or a button, text that will be displayed on it must go in quotes after the tag opening, called the "argument" e.g. `<Label "Hello"/>`. 
 - Any Toga attributes you wish to use in a tag can go after the argument, or if you don't have an argument, after the tag opening. The syntax for attributes will be the same as Toga syntax, except no commas separating attributes e.g. `<Label "Hi" name="label1" margin=5/>`.
