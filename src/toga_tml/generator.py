@@ -26,7 +26,6 @@ def generate(node):
                     "arguments": node["arguments"] or prefab["arguments"],
                     "children": [],
                 }
-
             pairs = []
             counter += 1
             var = f"tag{counter}"
@@ -65,6 +64,36 @@ def generate(node):
             add_statement = f"{var}.add({', '.join(childVars)})"
 
             all_statements = "\n".join(childStatementsList + [box_statement, add_statement])
+            return all_statements, var
+        case "OptionContainer":
+            childStatementsList = []
+            childEntries = []
+            counter += 1
+            var = f"optioncontainer{counter}"
+            name_attributes = node["attributes"].pop("name", None)
+            name = name_attributes["value"] if name_attributes else var
+            for child in node["children"]:
+                title_attribute = child["attributes"].pop("title", None)
+                if title_attribute is None:
+                    raise Exception("G002 - OptionContainer children require a 'title' attribute")
+                if title_attribute["kind"] == "string":
+                    title_code = f'"{title_attribute["value"]}"'
+                else:
+                    title_code = title_attribute["value"]
+                child_statements, child_var = generate(child)
+                childStatementsList.append(child_statements)
+                childEntries.append(f"({title_code}, {child_var})")
+            pairs = []
+            for key, attribute in node["attributes"].items():
+                if attribute["kind"] == "string":
+                    pairs.append(f'{key}="{attribute["value"]}"')
+                elif attribute["kind"] == "raw":
+                    pairs.append(f'{key}={attribute["value"]}')
+            pairs.append(f"content=[{', '.join(childEntries)}]")
+            attributes = ", ".join(pairs)
+            optioncontainer_statement = f"{var} = toga.OptionContainer({attributes})\nself.{name} = {var}"
+ 
+            all_statements = "\n".join(childStatementsList + [optioncontainer_statement])
             return all_statements, var
         case "Body":
             childStatementsList = []

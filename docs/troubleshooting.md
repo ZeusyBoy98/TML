@@ -94,6 +94,29 @@ Fix Example:
 </Body>
 ```
 
+## G002
+Any children of an `<OptionContainer>` tag require a title attribute. <br>
+Error Example:
+```xml
+<Body>
+    <OptionContainer>
+        <Box>
+            <Label "Content here"/>
+        </Box>
+    </OptionContainer>
+</Body>
+```
+Fix Example:
+```xml
+<Body>
+    <OptionContainer>
+        <Box title="Home">
+            <Label "Content here"/>
+        </Box>
+    </OptionContainer>
+</Body>
+```
+
 ## M001
 There is no `<Body>` tag containing the UI code. All TML UI code must be contained inside of a `<Body>` tag.
 Error Example:

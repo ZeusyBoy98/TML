@@ -31,6 +31,8 @@ def parse(tokens):
                     children.append(parseBody())
                 elif peek()["value"].startswith("Prefabs"):
                     children.append(parsePrefabs())
+                elif peek()["value"].startswith("OptionContainer"):
+                    children.append(parseOptionContainer())
                 else:
                     raise Exception(f"P002 - Unknown tag {peek()}")
             else:
@@ -54,6 +56,11 @@ def parse(tokens):
         _, attributes = parseText(t["value"])
         attributes, _ = parseAttributes(attributes)
         return {"type": "Box", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
+    def parseOptionContainer():
+        t = consume()
+        _, attributes = parseText(t["value"])
+        attributes, _ = parseAttributes(attributes)
+        return {"type": "OptionContainer", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
     def parseUntil(closeType):
         children = []
         while peek()["type"] != lexer.TOKENTYPE["EOF"] and peek()["type"] != closeType:
