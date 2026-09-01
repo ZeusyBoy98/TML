@@ -74,7 +74,7 @@ def parse(tokens):
                     children.append(parseBox())
                 elif peek()["value"].startswith("Body"):
                     children.append(parseBody())
-		elif peek()["value"].startswith("OptionContainer"):
+                elif peek()["value"].startswith("OptionContainer"):
                     children.append(parseOptionContainer())
                 # elif peek()["value"].startswith("Prefabs"):
                 #     children.append(parsePrefabs())
