@@ -1,14 +1,15 @@
 from . import lexer
-
-
+ 
 def parse(tokens):
     pos = 0
     def peek(): return tokens[pos]
-    def consume(): 
+    def consume():
         nonlocal pos
         t = tokens[pos]
         pos += 1
         return t
+    def tagNameOf(tagValue):
+        return tagValue.split(" ", 1)[0]
     def parseDocument():
         seenNonImport = False
         children = []
@@ -25,18 +26,17 @@ def parse(tokens):
                     children.append(parseTag())
             elif peek()["type"] == lexer.TOKENTYPE["TAGOPEN"]:
                 seenNonImport = True
-                if peek()["value"].startswith("Box"):
-                    children.append(parseBox())
-                elif peek()["value"].startswith("Body"):
+                name = tagNameOf(peek()["value"])
+                if name == "Body":
                     children.append(parseBody())
-                elif peek()["value"].startswith("Prefabs"):
+                elif name == "Prefabs":
                     children.append(parsePrefabs())
-                elif peek()["value"].startswith("OptionContainer"):
+                elif name == "OptionContainer":
                     children.append(parseOptionContainer())
                 else:
-                    raise Exception(f"P002 - Unknown tag {peek()}")
+                    children.append(parseContainer())
             else:
-                raise Exception(f"P003 - Unexpected token {peek()['type']}")
+                raise Exception(f"P002 - Unexpected token {peek()['type']}")
         return {"type": "Document", "children": children}
     def parseTag():
         t = consume()
@@ -45,23 +45,24 @@ def parse(tokens):
         return {"type": "Tag", "name": name, "arguments": arguments, "attributes": attributes, "children": []}
     def parseBody():
         t = consume()
-        _, attributes = parseText(t["value"])
+        name, attributes = parseText(t["value"])
         attributes, _ = parseAttributes(attributes)
-        return {"type": "Body", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
+        return {"type": "Body", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"], name)}
     def parsePrefabs():
-        consume()
-        return {"type": "Prefabs", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
-    def parseBox():
         t = consume()
-        _, attributes = parseText(t["value"])
+        name, _ = parseText(t["value"])
+        return {"type": "Prefabs", "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"], name)}
+    def parseContainer():
+        t = consume()
+        name, attributes = parseText(t["value"])
         attributes, _ = parseAttributes(attributes)
-        return {"type": "Box", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
+        return {"type": "Container", "name": name, "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"], name)}
     def parseOptionContainer():
         t = consume()
-        _, attributes = parseText(t["value"])
+        name, attributes = parseText(t["value"])
         attributes, _ = parseAttributes(attributes)
-        return {"type": "OptionContainer", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"])}
-    def parseUntil(closeType):
+        return {"type": "OptionContainer", "attributes": attributes, "children": parseUntil(lexer.TOKENTYPE["TAGCLOSE"], name)}
+    def parseUntil(closeType, expectedName=None):
         children = []
         while peek()["type"] != lexer.TOKENTYPE["EOF"] and peek()["type"] != closeType:
             if peek()["type"] == lexer.TOKENTYPE["NEWLINE"]:
@@ -70,19 +71,22 @@ def parse(tokens):
             elif peek()["type"] == lexer.TOKENTYPE["TAG"]:
                 children.append(parseTag())
             elif peek()["type"] == lexer.TOKENTYPE["TAGOPEN"]:
-                if peek()["value"].startswith("Box"):
-                    children.append(parseBox())
-                elif peek()["value"].startswith("Body"):
+                name = tagNameOf(peek()["value"])
+                if name == "Body":
                     children.append(parseBody())
-                elif peek()["value"].startswith("OptionContainer"):
+                elif name == "OptionContainer":
                     children.append(parseOptionContainer())
-                # elif peek()["value"].startswith("Prefabs"):
-                #     children.append(parsePrefabs())
                 else:
-                    raise Exception(f"P002 - Unknown tag {peek()['value']}")
+                    children.append(parseContainer())
+            else:
+                raise Exception(f"P002 - Unexpected token {peek()['type']}")
         if peek()["type"] != closeType:
             raise Exception(f"P004 - Unclosed tag, expected {closeType} but got end of file")
-        consume()
+        closeTag = consume()
+        if expectedName is not None and closeTag["value"] != expectedName:
+            raise Exception(
+                f"P005 - Mismatched closing tag: expected </{expectedName}> but found </{closeTag['value']}>"
+            )
         return children
     def parseText(input):
         if " " in input:

@@ -10,6 +10,5 @@ Prefabs are a part of TML which isn't part of base Toga. They allow the definiti
 - All prefabs must be defined in the `<Prefabs></Prefabs>`. 
 - The structure for a prefab is `<CustomTagName "Argument if necessary" type="the normal Toga tag name e.g. Label" attribute1="this" attribute2=(that)/>`
 - The prefab can then be called with `<CustomTagName name="name_of_this_instance"/>`
-- Any instance of a prefab you use in the Body must have a `name=""` attribute to distinguish it from other uses of that prefab.
 - Instances of prefabs can still be modified from their original, and attributes and arguments from the instance will be prioritised over the originals. <br> 
-  Example: `<CustomTagName name="name_of_this_instance2" attribute1="I've changed my mind"/>`
+  Example: `<CustomTagName attribute1="I've changed my mind"/>`

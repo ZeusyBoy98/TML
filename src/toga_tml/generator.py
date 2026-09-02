@@ -1,6 +1,6 @@
 counter = 0
 prefabs = {}
-
+ 
 def generate(node):
     global counter
     global prefabs
@@ -15,8 +15,6 @@ def generate(node):
         case "Tag":
             if node["name"] in prefabs:
                 prefab = prefabs[node["name"]]
-                if "name" not in node["attributes"]:
-                    raise Exception(f"G001 - Prefab {node['name']} requires a 'name' attribute")
                 node["attributes"].pop("type", None)
                 usageAttributes = node["attributes"]
                 node = {
@@ -42,28 +40,45 @@ def generate(node):
             allArguments = ", ".join(filter(None, [argumentString, attributes]))
             statement = f"{var} = toga.{node['name']}({allArguments})\nself.{name} = {var}"
             return statement, var
-        case "Box":
+        case "Container":
+            if node["name"] in prefabs:
+                prefab = prefabs[node["name"]]
+                node["attributes"].pop("type", None)
+                targetType = prefab["type"]
+                mergedAttributes = {**prefab["attributes"], **node["attributes"]}
+            else:
+                targetType = node["name"]
+                mergedAttributes = node["attributes"]
             childStatementsList = []
             childVars = []
             counter += 1
-            var = f"box{counter}"
-            name_attributes = node["attributes"].pop("name", None)
+            var = f"container{counter}"
+            name_attributes = mergedAttributes.pop("name", None)
             name = name_attributes["value"] if name_attributes else var
             for child in node["children"]:
                 child_statements, child_var = generate(child)
                 childStatementsList.append(child_statements)
                 childVars.append(child_var)
             pairs = []
-            for key, attribute in node["attributes"].items():
+            for key, attribute in mergedAttributes.items():
                 if attribute["kind"] == "string":
                     pairs.append(f'{key}="{attribute["value"]}"')
                 elif attribute["kind"] == "raw":
                     pairs.append(f'{key}={attribute["value"]}')
-            attributes = ", ".join(pairs)
-            box_statement = f"{var} = toga.Box({attributes})\nself.{name} = {var}"
-            add_statement = f"{var}.add({', '.join(childVars)})"
-
-            all_statements = "\n".join(childStatementsList + [box_statement, add_statement])
+            if targetType == "Box":
+                attributes = ", ".join(pairs)
+                container_statement = f"{var} = toga.Box({attributes})\nself.{name} = {var}"
+                add_statement = f"{var}.add({', '.join(childVars)})"
+                all_statements = "\n".join(childStatementsList + [container_statement, add_statement])
+            else:
+                if len(childVars) == 1:
+                    content_code = childVars[0]
+                else:
+                    content_code = f"[{', '.join(childVars)}]"
+                pairs.append(f"content={content_code}")
+                attributes = ", ".join(pairs)
+                container_statement = f"{var} = toga.{targetType}({attributes})\nself.{name} = {var}"
+                all_statements = "\n".join(childStatementsList + [container_statement])
             return all_statements, var
         case "OptionContainer":
             childStatementsList = []
@@ -75,7 +90,7 @@ def generate(node):
             for child in node["children"]:
                 title_attribute = child["attributes"].pop("title", None)
                 if title_attribute is None:
-                    raise Exception("G002 - OptionContainer children require a 'title' attribute")
+                    raise Exception("G001 - OptionContainer children require a 'title' attribute")
                 if title_attribute["kind"] == "string":
                     title_code = f'"{title_attribute["value"]}"'
                 else:

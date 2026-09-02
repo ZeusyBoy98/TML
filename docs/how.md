@@ -32,7 +32,7 @@ It is then excectued in the `load()` function and returned to the Python file wh
 </Prefabs>
 
 <Body>
-    <RedHi name="hi_label"/>
+    <RedHi/>
     <Box name="input_container"> 
         <TextInput name="name_input" flex=1/>
         <Button "Click me!" name="button" on_press=self.say_hello margin=5/>

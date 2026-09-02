@@ -16,6 +16,22 @@ Fix Example:
 </Body>
 ```
 
+## L002
+A tag has been started with `<` but has not been closed. Any tags must be closed with `>` or `/>`. <br>
+Error Example:
+```xml
+<Body
+    <Label "Hi"
+</Body
+```
+Fix Example:
+```xml
+<!-- This comment does close -->
+<Body>
+    <Label "Hi"/>
+</Body>
+```
+
 ## P001
 An import statement has been found not at the top of a file. All import statements should be before any other code. <br>
 Error Example:
@@ -36,7 +52,7 @@ Fix Example:
 ```
 
 ## P002
-A tag non-self closing has been used in the TML code which is unknown to the language. <br>
+A tag has been used in the TML code which is unknown to the language. <br>
 Error Example:
 ```xml
 <ThisTagIsBad>
@@ -71,30 +87,25 @@ Fix Example:
 </Body>
 ```
 
-## G001
-A prefab has been used in the body without assigning a name. All instances of a prefab must have a name to distinguish it from other uses. <br>
-Error Example:
+## P005
+This is a mismatched closing tag. All tags should close with the same tag they opened with
 ```xml
-<Prefabs>
-    <WideHi "Hi" type="Label" margin=5>
-</Prefabs>
-
 <Body>
-    <WideHi/>
+    <Box>
+        <Label "hi"/>
+    </Wrong>
 </Body>
 ```
 Fix Example:
 ```xml
-<Prefabs>
-    <WideHi "Hi" type="Label" margin=5>
-</Prefabs>
-
 <Body>
-    <WideHi name="instance1"/>
+    <Box>
+        <Label "hi"/>
+    </Box>
 </Body>
 ```
 
-## G002
+## G001
 Any children of an `<OptionContainer>` tag require a title attribute. <br>
 Error Example:
 ```xml
